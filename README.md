@@ -90,7 +90,7 @@ This starts MySQL (schema auto-loaded on first boot), the API on `:5000`, and th
 - **Backend**: any Node host works (Render, Railway, Fly.io). Set the env vars above and point `DB_HOST` etc. at a managed MySQL instance (PlanetScale, Railway, RDS).
 - **Frontend**: build with `npm run build` and deploy `frontend/dist` as a static site (Vercel, Netlify, or the included nginx Docker image). Set `VITE_API_URL` to the deployed backend's URL at build time.
 - Update `CLIENT_ORIGIN` on the backend to the deployed frontend's origin, or CORS will block it.
-- Add the live URL here once deployed: `<deployment-url>`
+- Add the live URL here once deployed: `https://frontend-red-nine-zsnb4bylqi.vercel.app`
 
 ## Notes
 
