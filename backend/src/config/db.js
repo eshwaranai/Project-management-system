@@ -3,17 +3,23 @@ require('dotenv').config();
 
 const pool = mysql.createPool({
   host: process.env.DB_HOST,
-  port: process.env.DB_PORT || 3306,
+  port: Number(process.env.DB_PORT || 3306),
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
+
   waitForConnections: true,
-  connectionLimit: 10,
+  connectionLimit: 5,
   queueLimit: 0,
-  dateStrings: true
+  dateStrings: true,
+
+  ssl: process.env.DB_SSL === 'true'
+    ? {
+        rejectUnauthorized: false
+      }
+    : undefined
 });
 
-// Fail fast if the DB is unreachable.
 async function verifyConnection() {
   try {
     const conn = await pool.getConnection();
@@ -22,8 +28,11 @@ async function verifyConnection() {
     console.log('[db] Connected to MySQL');
   } catch (err) {
     console.error('[db] Could not connect to MySQL:', err.message);
-    process.exit(1);
+    throw err;
   }
 }
 
-module.exports = { pool, verifyConnection };
+module.exports = {
+  pool,
+  verifyConnection
+};
