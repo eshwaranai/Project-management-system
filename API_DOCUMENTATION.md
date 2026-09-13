@@ -1,6 +1,7 @@
 # API Documentation
 
 Base URL (local): `http://localhost:5000/api`
+Base URL (deployed): `https://backend-8f3im5oud-eshwaranais-projects.vercel.app/api`
 
 All request/response bodies are JSON. Protected routes require:
 
@@ -8,7 +9,20 @@ All request/response bodies are JSON. Protected routes require:
 Authorization: Bearer <jwt_token>
 ```
 
-Errors always take the shape `{ "error": "message" }`.
+Example authenticated request:
+
+```bash
+curl -H "Authorization: Bearer $TOKEN" https://backend-8f3im5oud-eshwaranais-projects.vercel.app/api/projects
+```
+
+Quick unauthenticated health check:
+
+```bash
+curl https://backend-8f3im5oud-eshwaranais-projects.vercel.app/api/health
+# { "status": "ok" }
+```
+
+Errors always take the shape `{ "error": "message" }`. Validation errors (400) name the specific field that failed, e.g. `{ "error": "email must be a valid email address" }`.
 
 ---
 
@@ -70,6 +84,14 @@ Query params (all optional):
 ```json
 { "name": "Nexus Mail", "description": "optional", "status": "Not Started", "startDate": "2026-01-01", "endDate": "2026-06-01" }
 ```
+
+| Field | Rules |
+|---|---|
+| `name` | required, non-empty, max 150 chars |
+| `description` | optional, string |
+| `status` | optional, one of `Not Started` / `In Progress` / `Completed` |
+| `startDate`, `endDate` | optional, ISO 8601 date; `endDate` cannot be before `startDate` |
+
 **201** → created project.
 
 ### `PUT /projects/:id`: same body shape as create (fields are optional; omitted fields keep their current value). **200** → updated project.
@@ -91,6 +113,16 @@ Query params: `search`, `status` (`Pending`|`In Progress`|`Completed`), `priorit
 ```json
 { "name": "Set up OAuth", "description": "optional", "priority": "High", "status": "Pending", "dueDate": "2026-10-01", "projectId": 1 }
 ```
+
+| Field | Rules |
+|---|---|
+| `name` | required, non-empty, max 150 chars |
+| `description` | optional, string |
+| `priority` | optional, one of `Low` / `Medium` / `High` |
+| `status` | optional, one of `Pending` / `In Progress` / `Completed` |
+| `dueDate` | optional, ISO 8601 date |
+| `projectId` | required on create, positive integer, must belong to the caller |
+
 **201** → created task. **404** if `projectId` isn't owned by the caller.
 
 ### `PUT /tasks/:id`: same shape as create, but `projectId` is optional and ignored if sent (a task's project can't be changed via this endpoint: validated as a well-formed integer if present, but never used to move the task). **200** → updated task.
@@ -115,6 +147,18 @@ Requires auth.
   "completedTasks": 9,
   "pendingTasks": 6
 }
+```
+
+---
+
+## Health
+
+### `GET /health`
+No auth required. Used to confirm the API is reachable (also handy for uptime checks).
+
+**200**
+```json
+{ "status": "ok" }
 ```
 
 ---
