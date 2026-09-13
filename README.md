@@ -1,4 +1,4 @@
-# Ledger — Project Management System
+# Ledger - Project Management System
 
 A full-stack web application for managing projects and tasks: create projects, break them into tasks, track progress, and see everything summarized on a dashboard. Built as a complete assessment submission covering authentication, authorization, CRUD, search/filtering, and production security practices.
 
