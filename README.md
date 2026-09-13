@@ -71,7 +71,7 @@ npm install
 npm run dev             # http://localhost:5173
 ```
 
-Open `http://localhost:5173`, register an account, and go.
+Open `https://frontend-red-nine-zsnb4bylqi.vercel.app`, register an account, and go.
 
 ## Running everything with Docker
 
